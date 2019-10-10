@@ -1,9 +1,9 @@
 BUILDDIR = build
+SRC_DIR = src
 
 TOOLS = tools
 
-SOURCES += src/app.c
-
+SOURCES += $(wildcard $(SRC_DIR)/*.c)
 INCLUDES += -Iinclude -I
 
 LIB = lib/launchpad_pro.a
