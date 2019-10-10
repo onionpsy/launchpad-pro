@@ -19,10 +19,10 @@ void fader_section_add_page(
     u8 index,
     u8 cc,
     u8 max_value,
-    u16 color,
-    u16 backgroud_color,
-    u16 muted_color,
-    u16 unmuted_color
+    int color,
+    int backgroud_color,
+    int muted_color,
+    int unmuted_color
 );
 
 void fader_section_init();

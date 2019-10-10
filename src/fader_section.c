@@ -21,7 +21,7 @@ void fader_section_change_page(u8 index) {
     );
 }
 
-void mute_per_track_control(u8 index) {
+void fader_section_mutes_handler(u8 index) {
     u8 col = index % 10;
 
     display_draw_plot_led(
@@ -41,8 +41,7 @@ void mute_per_track_control(u8 index) {
     //fader_section.current_page->enabled[col] * fader_section.current_page->values[col]
 }
 
-// Controls
-/*void fader_per_track_control(u8 index) {
+void fader_section_faders_handler(u8 index) {
     if (!fader_section.current_page) {
         return;
     }
@@ -55,14 +54,14 @@ void mute_per_track_control(u8 index) {
 
     fader_section.current_page->values[col] = fader_value;
     for (u8 i = 2; i <= fader_value; ++i) {
-        display_draw_pad(
+        display_plot_led(
             i * 10 + col,
             fader_section.current_page->color
         );
     }
 
     for (u8 i = 8; i > fader_value; --i) {
-        display_draw_pad(
+        display_plot_led(
             i * 10 + col,
             fader_section.current_page->backgroud_color
         );
@@ -76,10 +75,10 @@ void mute_per_track_control(u8 index) {
     if (!fader_section.current_page->mutes[col]) {
         hal_send_midi(DINMIDI, CC + col - 1, fader_section.current_page->cc, (fader_value - 1) * 15);
     }
-}*/
+}
 
 
-void fader_section_add_page(FaderSection *fader_section, u8 index, u8 cc, u8 max_value, u16 color, u16 backgroud_color, u16 muted_color, u16 unmuted_color) {
+void fader_section_add_page(FaderSection *fader_section, u8 index, u8 cc, u8 max_value, int color, int backgroud_color, int muted_color, int unmuted_color) {
     u8 i = sizeof(fader_section) / sizeof(fader_section[0]);
     fader_section->pages[i].index = index;
     fader_section->pages[i].cc = cc;
@@ -93,7 +92,7 @@ void fader_section_add_page(FaderSection *fader_section, u8 index, u8 cc, u8 max
 void fader_section_init() {
     
 
-    fader_section_add_page(&fader_section, 89, 95, 127, 0xE00, 0x500, 0x211, 0xa99);
+    fader_section_add_page(&fader_section, 89, 95, 127, 0xEE0000, 0x050000, 0x000000, 0x990000);
     //fader_section_add_page(&fader_section, 79, 82, 127, 0x00EE00, 0x000500, 0x010201, 0x99aa99);
 
     // Reberv send
