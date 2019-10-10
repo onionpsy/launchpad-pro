@@ -1,7 +1,7 @@
 #include "display.h"
 #include "app_defs.h"
 
-void display_draw_pad(u8 index, u16 color) {
+void display_plot_led(u8 index, u16 color) {
     hal_plot_led(
         TYPEPAD,
         index,
@@ -46,13 +46,12 @@ void display_draw_faders(u8 index, u8 *values, u16 color, u16 background_color) 
 u8 display_change_page(u8 index, FaderPage *pages) {
     // Clear pages buttons
     for (u8 i = 1; i < 9; ++i) {
+        display_draw_
         hal_plot_led(TYPEPAD, i * 10 + 9, 0, 0, 10);
     }
 
-    hal_plot_led(TYPEPAD, 91, 0, 0, 0);
-    for (u8 i = 0; i < sizeof(pages) / sizeof(pages[0]); ++i) {
+    for (u8 i = 0; i < sizeof(pages->values) / sizeof(pages[0]); ++i) {
         if (pages[i].index == index) {
-            //fader_section.current_page = &fader_section.pages[i];
             hal_plot_led(TYPEPAD, index, MAXLED, MAXLED, MAXLED);
             return i;
         }
@@ -69,6 +68,7 @@ void display_draw_mutes(u8 index, u8 *mutes, u16 muted_color, u16 unmuted_color)
         );
     }
 }
+
 void display_draw_piano(u8 index) {
     const u16 black_key = 0x111;
     const u16 white_key = 0x222;

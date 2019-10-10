@@ -97,7 +97,7 @@ void app_pad_event(u8 index, u8 value) {
 void app_button_event(u8 index, u8 value) {
     //case is_menu_button(index):;
     if (is_page_button(index)) {
-        display_draw_pad(92, rand()/100);
+        display_plot_led(92, rand()/100);
         switch (current_section) {
             case FADER_SECTION: debug(93); fader_section_change_page(index); break;
             case PIANO_SECTION: break;

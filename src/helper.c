@@ -15,5 +15,5 @@ u8 is_page_button(u8 index) {
 }
 
 void debug(u8 index) {
-    display_draw_pad(index, rand()/100);
+    display_plot_led(index, rand()/100);
 }

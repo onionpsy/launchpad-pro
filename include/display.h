@@ -6,7 +6,7 @@
 
 u8 display_change_page(u8 index, FaderPage *pages);
 
-void display_draw_pad(u8 index, u16 color);
+void display_plot_led(u8 index, u16 color);
 
 void display_fill_all(u16 color);
 
@@ -22,6 +22,13 @@ void display_draw_faders(
 );
 void display_draw_piano(
     u8 index
+);
+
+void display_draw_mutes(
+    u8 index,
+    u8 *mutes,
+    u16 muted_color,
+    u16 color
 );
 
 #endif

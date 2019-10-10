@@ -4,16 +4,18 @@
 FaderSection fader_section;
 
 void fader_section_change_page(u8 index) {
-    u8 i = display_change_page(index, &fader_section.pages);
-    fader_section.current_page = fader_section.pages[i];
-    display_draw_all_faders
+    u8 i = display_change_page(index, fader_section.pages);
+    fader_section.current_page = &fader_section.pages[i];
+    display_draw_faders(
+        81, 
         fader_section.current_page->values,
         fader_section.current_page->color,
         fader_section.current_page->backgroud_color
     );
 
-    display_draw_all_mutes(
-        fader_section.current_page->mutes,
+    display_draw_mutes(
+        11,
+        &fader_section.current_page->mutes,
         fader_section.current_page->muted_color,
         fader_section.current_page->unmuted_color
     );
@@ -22,7 +24,7 @@ void fader_section_change_page(u8 index) {
 void mute_per_track_control(u8 index) {
     u8 col = index % 10;
 
-    display_draw_pad(
+    display_draw_plot_led(
         10 + col,
         fader_section.current_page->mutes[col]? fader_section.current_page->unmuted_color : fader_section.current_page->muted_color
     );
