@@ -88,18 +88,22 @@ void app_surface_event(u8 type, u8 index, u8 value)
 // Pads event (11->18 ... 81->88)
 void app_pad_event(u8 index, u8 value) {
     switch (current_section) {
-        case FADER_SECTION: fader_section_change_page(index); break;
+        case FADER_SECTION: fader_section_faders_handler(index); break;
         case PIANO_SECTION: break;
     }
 }
 
 // Button !pads
 void app_button_event(u8 index, u8 value) {
-    //case is_menu_button(index):;
-    if (is_page_button(index)) {
-        display_plot_led(92, rand()/100);
+    if (is_section_button(index)) {
+        current_section = index;
+        switch (index) {
+            case FADER_SECTION: fader_section_draw(); break;
+            case PIANO_SECTION: ; break;
+        }
+    } else if (is_page_button(index)) {
         switch (current_section) {
-            case FADER_SECTION: debug(93); fader_section_change_page(index); break;
+            case FADER_SECTION: fader_section_change_page(index); break;
             case PIANO_SECTION: break;
         }
     }

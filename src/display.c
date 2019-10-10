@@ -44,18 +44,19 @@ void display_draw_faders(u8 index, u8 *values, int color, int background_color) 
 }
 
 u8 display_change_page(u8 index, FaderPage *pages) {
+
     // Clear pages buttons
-    for (u8 i = 1; i < 9; ++i) {
-        display_plot_led(i * 10 + 9, 0x009);
+    /*for (u8 i = 1; i < 9; ++i) {
+        display_plot_led(i * 10 + 9, 0x00009);
     }
 
-    for (u8 i = 0; i < sizeof(pages) / sizeof(pages[0]); ++i) {
+    for (u8 i = 0; i < sizeof(pages) / sizeof(*pages); ++i) {
+        display_plot_led(11 + i, 0xFFFFFF);
         if (pages[i].index == index) {
-            debug(78);
-            display_plot_led(index, 0x932);
+            display_plot_led(index, 0x9998877);
             return i;
         }
-    }
+    }*/
 
     return 0;
 }

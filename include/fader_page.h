@@ -1,12 +1,14 @@
 #ifndef FADER_PAGE_H
 #define FADER_PAGE_H
 
+#include "app_defs.h"
+
 typedef struct FaderPage {
-    int values[10]; // TODO could be -1 if fader_value is between 0 and 8
-    int mutes[10]; // TODO
-    int index;
-    int cc;
-    int max_value;
+    u8 values[10]; // TODO could be -1 if fader_value is between 0 and 8
+    u8 mutes[10]; // TODO
+    u8 index;
+    u8 cc;
+    u8 max_value;
 
     int backgroud_color;
     int color;

@@ -15,7 +15,6 @@ void fader_section_change_page(u8 index);
 //void mute_per_track_control
 
 void fader_section_add_page(
-    FaderSection *fader_section,
     u8 index,
     u8 cc,
     u8 max_value,

@@ -4,8 +4,6 @@
 #include "app.h"
 #include "fader_page.h"
 
-u8 display_change_page(u8 index, FaderPage *pages);
-
 void display_plot_led(u8 index, int color);
 
 void display_fill_all(int color);
