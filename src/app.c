@@ -37,43 +37,39 @@
 
 #include "app.h"
 
-//______________________________________________________________________________
-//
-// This is where the fun is!  Add your code to the callbacks below to define how
-// your app behaves.
-//
-// In this example, we either render the raw ADC data as LED rainbows or store
-// and recall the pad state from flash.
-//______________________________________________________________________________
-
 // store ADC frame pointer
 static const u16 *g_ADC = 0;
 
 // buffer to store pad states for flash save
 #define BUTTON_COUNT 100
 
-u8 g_Buttons[BUTTON_COUNT] = {0};
+FaderSection fader_section;
 
-//______________________________________________________________________________
+u8 buttons[BUTTON_COUNT] = {0};
+
+u8 current_section = FADER_SECTION;
+
+// ----------------------------------------------------------------
+
+void app_sysex_event(u8 port, u8 * data, u16 count) { }
+void app_aftertouch_event(u8 index, u8 value) { }
 
 void app_surface_event(u8 type, u8 index, u8 value)
 {
+    // TMP ?
+    if (!value) {
+        return;
+    }
+
     switch (type)
     {
         case  TYPEPAD:
         {
-            // toggle it and store it off, so we can save to flash if we want to
-            if (value)
-            {
-                g_Buttons[index] = MAXLED * !g_Buttons[index];
+            if (is_pad(index)) {
+                app_pad_event(index, value);
+            } else {
+                app_button_event(index, value);
             }
-            
-            // example - light / extinguish pad LEDs
-            hal_plot_led(TYPEPAD, index, 0, 0, g_Buttons[index]);
-            
-            // example - send MIDI
-            hal_send_midi(DINMIDI, NOTEON | 0, index, value);
-            
         }
         break;
             
@@ -82,14 +78,32 @@ void app_surface_event(u8 type, u8 index, u8 value)
             if (value)
             {
                 // save button states to flash (reload them by power cycling the hardware!)
-                hal_write_flash(0, g_Buttons, BUTTON_COUNT);
+                //hal_write_flash(0, g_Buttons, BUTTON_COUNT);
             }
         }
         break;
     }
 }
 
-//______________________________________________________________________________
+// Pads event (11->18 ... 81->88)
+void app_pad_event(u8 index, u8 value) {
+    switch (current_section) {
+        case FADER_SECTION: fader_section_change_page(index); break;
+        case PIANO_SECTION: break;
+    }
+}
+
+// Button !pads
+void app_button_event(u8 index, u8 value) {
+    //case is_menu_button(index):;
+    if (is_page_button(index)) {
+        display_draw_pad(92, rand()/100);
+        switch (current_section) {
+            case FADER_SECTION: debug(93); fader_section_change_page(index); break;
+            case PIANO_SECTION: break;
+        }
+    }
+}
 
 void app_midi_event(u8 port, u8 status, u8 d1, u8 d2)
 {
@@ -105,95 +119,40 @@ void app_midi_event(u8 port, u8 status, u8 d1, u8 d2)
         hal_send_midi(USBMIDI, status, d1, d2);
     }
 }
-
-//______________________________________________________________________________
-
-void app_sysex_event(u8 port, u8 * data, u16 count)
-{
-    // example - respond to UDI messages?
-}
-
-//______________________________________________________________________________
-
-void app_aftertouch_event(u8 index, u8 value)
-{
-    // example - send poly aftertouch to MIDI ports
-    hal_send_midi(USBMIDI, POLYAFTERTOUCH | 0, index, value);
-    
-    
-}
-
-//______________________________________________________________________________
-
 void app_cable_event(u8 type, u8 value)
 {
     // example - light the Setup LED to indicate cable connections
     if (type == MIDI_IN_CABLE)
     {
-        hal_plot_led(TYPESETUP, 0, 0, value, 0); // green
+        hal_plot_led(TYPESETUP, 0, 0, 0, 0);
     }
     else if (type == MIDI_OUT_CABLE)
     {
-        hal_plot_led(TYPESETUP, 0, value, 0, 0); // red
+        hal_plot_led(TYPESETUP, 0, 0, value, 0);
     }
 }
-
-//______________________________________________________________________________
 
 void app_timer_event()
 {
-    // example - send MIDI clock at 125bpm
-#define TICK_MS 20
-    
-    static u8 ms = TICK_MS;
-    
-    if (++ms >= TICK_MS)
-    {
-        ms = 0;
-        
-        // send a clock pulse up the USB
-        hal_send_midi(USBSTANDALONE, MIDITIMINGCLOCK, 0, 0);
-    }
-    
-	// alternative example - show raw ADC data as LEDs
-	for (int i=0; i < PAD_COUNT; ++i)
-	{
-		// raw adc values are 12 bit, but LEDs are 6 bit.
-		// Let's saturate into r;g;b for a rainbow effect to show pressure
-		u16 r = 0;
-		u16 g = 0;
-		u16 b = 0;
-		
-		u16 x = (3 * MAXLED * g_ADC[i]) >> 12;
-		
-		if (x < MAXLED)
-		{
-			r = x;
-		}
-		else if (x >= MAXLED && x < (2*MAXLED))
-		{
-			r = 2*MAXLED - x;
-			g = x - MAXLED;
-		}
-		else
-		{
-			g = 3*MAXLED - x;
-			b = x - 2*MAXLED;
-		}
-		
-		hal_plot_led(TYPEPAD, ADC_MAP[i], r, g, b);
-	}
 }
-
-//______________________________________________________________________________
 
 void app_init(const u16 *adc_raw)
 {
+    //display_fill_all(0x83823);
+
+    fader_section_init();   
+    //hal_read_device_id();
+    //change_section();
+
     // example - load button states from flash
-    hal_read_flash(0, g_Buttons, BUTTON_COUNT);
+    //hal_read_flash(0, g_Buttons, BUTTON_COUNT);
+
+    /*hal_plot_led(TYPEPAD, 1, 255, 255, 0);
+    hal_plot_led(TYPEPAD, 11, 255, 255, 0);*/
+
     
-    // example - light the LEDs to say hello!
-    for (int i=0; i < 10; ++i)
+    // borders
+    /*for (int i=0; i < 10; ++i)
     {
         for (int j=0; j < 10; ++j)
         {
@@ -201,7 +160,8 @@ void app_init(const u16 *adc_raw)
             
             hal_plot_led(TYPEPAD, j*10 + i, 0, 0, b);
         }
-    }
+    }*/
+
 	
 	// store off the raw ADC frame pointer for later use
 	g_ADC = adc_raw;

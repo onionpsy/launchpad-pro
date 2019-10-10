@@ -40,6 +40,10 @@
 // ____________________________________________________________________________
 //
 #include "app_defs.h"
+#include "display.h"
+#include "helper.h"
+#include "fader_section.h"
+#include "piano_section.h"
 
 /******************************************************************************
  Button indexing is as follows - numbers in brackets do not correspond to real
@@ -232,5 +236,9 @@ void app_surface_event(u8 type, u8 index, u8 value);
  */
 void app_aftertouch_event(u8 index, u8 value);
 
+
+void app_pad_event(u8 index, u8 value);
+
+void app_button_event(u8 index, u8 value);
 
 #endif
