@@ -7,7 +7,6 @@ u8 page_counter = 0;
 void fader_section_change_page(u8 index) {
     display_plot_led(fader_section.current_page->index, fader_section.current_page->color);
 
-    u8 s = sizeof(fader_section.pages) / sizeof(*fader_section.pages);
     for (u8 i = 0; i < sizeof(fader_section.pages) / sizeof(*fader_section.pages); ++i) {
         if (fader_section.pages[i].index == index) {
             display_plot_led(index, 0xFFFFFF);
@@ -33,20 +32,6 @@ void fader_section_change_page(u8 index) {
         fader_section.current_page->muted_color,
         fader_section.current_page->unmuted_color
     );
-}
-
-void fader_section_mutes_handler(u8 index) {
-    u8 col = index % 10;
-
-
-    hal_send_midi(
-        DINMIDI,
-        CC + col - 1,
-        fader_section.current_page->cc,
-        fader_section.current_page->mutes[col] * (fader_section.current_page->values[col] - 1) * 15
-    );
-
-    fader_section.current_page->mutes[col] = !fader_section.current_page->mutes[col];
 }
 
 void fader_section_faders_controller(u8 col, u8 fader_value) {
