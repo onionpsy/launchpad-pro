@@ -56,11 +56,6 @@ void app_aftertouch_event(u8 index, u8 value) { }
 
 void app_surface_event(u8 type, u8 index, u8 value)
 {
-    // TMP ?
-    if (!value) {
-        return;
-    }
-
     switch (type)
     {
         case  TYPEPAD:

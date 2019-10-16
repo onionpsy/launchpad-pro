@@ -20,7 +20,7 @@ void piano_section_controller(u8 index, u8 value) {
     if (value > 0) {
         midi_send(DINMIDI, NOTEON, piano.midi_channel, midi_note + (12 * piano.octave), value);
     } else {
-        // midi_send(DINMIDI, NOTEOFF, piano.midi_channel, midi_note + (12 * piano.octave), 0); // TODO
+        midi_send(DINMIDI, NOTEOFF, piano.midi_channel, midi_note + (12 * piano.octave), 0);
     }
 }
 
