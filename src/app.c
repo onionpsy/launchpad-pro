@@ -88,23 +88,24 @@ void app_surface_event(u8 type, u8 index, u8 value)
 // Pads event (11->18 ... 81->88)
 void app_pad_event(u8 index, u8 value) {
     switch (current_section) {
-        case FADER_SECTION: fader_section_faders_handler(index); break;
-        case PIANO_SECTION: break;
+        case FADER_SECTION: fader_section_handler(index); break;
+        case PERFORMANCE_SECTION: performance_section_handler(index, value); break;
     }
 }
 
 // Button !pads
 void app_button_event(u8 index, u8 value) {
     if (is_section_button(index)) {
+        display_fill_all(0x000000);
         current_section = index;
         switch (index) {
             case FADER_SECTION: fader_section_draw(); break;
-            case PIANO_SECTION: ; break;
+            case PERFORMANCE_SECTION: ; performance_section_draw(); break;
         }
     } else if (is_page_button(index)) {
         switch (current_section) {
             case FADER_SECTION: fader_section_change_page(index); break;
-            case PIANO_SECTION: break;
+            case PERFORMANCE_SECTION: performance_section_change_page(index); break;
         }
     }
 }
@@ -142,31 +143,8 @@ void app_timer_event()
 
 void app_init(const u16 *adc_raw)
 {
-    //display_fill_all(0x83823);
-
-    fader_section_init();   
-    //hal_read_device_id();
-    //change_section();
-
-    // example - load button states from flash
-    //hal_read_flash(0, g_Buttons, BUTTON_COUNT);
-
-    /*hal_plot_led(TYPEPAD, 1, 255, 255, 0);
-    hal_plot_led(TYPEPAD, 11, 255, 255, 0);*/
-
-    
-    // borders
-    /*for (int i=0; i < 10; ++i)
-    {
-        for (int j=0; j < 10; ++j)
-        {
-            u8 b = g_Buttons[j*10 + i];
-            
-            hal_plot_led(TYPEPAD, j*10 + i, 0, 0, b);
-        }
-    }*/
-
+    fader_section_init();  
+    performance_section_init();
 	
-	// store off the raw ADC frame pointer for later use
 	g_ADC = adc_raw;
 }

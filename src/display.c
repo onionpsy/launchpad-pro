@@ -71,8 +71,10 @@ void display_draw_mutes(u8 index, u8 *mutes, int muted_color, int unmuted_color)
 }
 
 void display_draw_piano(u8 index) {
-    const int black_key = 0x111;
-    const int white_key = 0x222;
+    // TODO, config file
+    const int black_key = 0x111111;
+    const int white_key = 0x222222;
+
     display_plot_led(82, black_key);
     display_plot_led(83, black_key);
     display_plot_led(85, black_key);

@@ -43,7 +43,8 @@
 #include "display.h"
 #include "helper.h"
 #include "fader_section.h"
-#include "piano_section.h"
+#include "performance_section.h"
+#include "midi.h"
 
 /******************************************************************************
  Button indexing is as follows - numbers in brackets do not correspond to real

@@ -18,9 +18,6 @@ void display_draw_faders(
     int color,
     int background_color
 );
-void display_draw_piano(
-    u8 index
-);
 
 void display_draw_mutes(
     u8 index,
@@ -28,5 +25,7 @@ void display_draw_mutes(
     int muted_color,
     int color
 );
+
+void display_draw_piano(u8 index);
 
 #endif

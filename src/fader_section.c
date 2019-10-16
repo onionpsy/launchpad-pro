@@ -53,7 +53,8 @@ void fader_section_faders_controller(u8 col, u8 fader_value) {
 
     // Only send fader value if not muted
     if (!fader_section.current_page->mutes[col]) {
-        hal_send_midi(DINMIDI, CC + col - 1, fader_section.current_page->cc, (fader_value - 1) * 15);
+        // hal_send_midi(DINMIDI, CC + col - 1, fader_section.current_page->cc, (fader_value - 1) * 15);
+        midi_send(USBMIDI, CC, col, fader_section.current_page->cc, (fader_value - 1) * 15);
     }
 }
 
@@ -73,7 +74,7 @@ void fader_section_mutes_controller(u8 col) {
     fader_section.current_page->mutes[col] = !fader_section.current_page->mutes[col];
 }
 
-void fader_section_faders_handler(u8 index) {
+void fader_section_handler(u8 index) {
     if (!fader_section.current_page) {
         return;
     }

@@ -131,7 +131,8 @@ static const u8 ADC_MAP[PAD_COUNT] =
 
 
 #define FADER_SECTION 1
-#define PIANO_SECTION 2
+#define PERFORMANCE_SECTION 2
+#define SETTINGS_SECTION 7
 
 // ____________________________________________________________________________
 #endif

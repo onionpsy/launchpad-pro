@@ -17,7 +17,7 @@ void fader_section_faders_controller(u8 col, u8 fader_value);
 
 void fader_section_mutes_controller(u8 col);
 
-void fader_section_faders_handler(u8 index);
+void fader_section_handler(u8 index);
 
 void fader_section_add_page(
     u8 index,
