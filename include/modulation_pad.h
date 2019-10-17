@@ -10,6 +10,15 @@ typedef struct ModualationPad {
     u8 start;
     u8 end;
     int color;
+    u8 value_range[2];
 } ModulationPad;
+
+void modulation_pad_handler(ModulationPad *pad, u8 index, u8 value);
+
+u8 modulation_pad_calculate_value(u8 value, u8 range1, u8 range2);
+
+void modulation_pad_aftertouch_handler(ModulationPad *pad, u8 index, u8 value);
+
+void modulation_pad_draw(ModulationPad *pad);
 
 #endif

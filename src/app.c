@@ -52,10 +52,15 @@ u8 current_section = FADER_SECTION;
 // ----------------------------------------------------------------
 
 void app_sysex_event(u8 port, u8 * data, u16 count) { }
-void app_aftertouch_event(u8 index, u8 value) { }
 
-void app_surface_event(u8 type, u8 index, u8 value)
-{
+void app_aftertouch_event(u8 index, u8 value) {
+    switch (current_section) {
+        case FADER_SECTION: break; // TODO
+        case PERFORMANCE_SECTION: performance_section_aftertouch_handler(index, value); break;
+    }  
+}
+
+void app_surface_event(u8 type, u8 index, u8 value) {
     switch (type)
     {
         case  TYPEPAD:
