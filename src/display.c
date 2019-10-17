@@ -69,23 +69,3 @@ void display_draw_mutes(u8 index, u8 *mutes, int muted_color, int unmuted_color)
         );
     }
 }
-
-void display_draw_piano(u8 index) {
-    // TODO, config file
-    const int black_key = 0x111111;
-    const int white_key = 0x222222;
-
-    display_plot_led(82, black_key);
-    display_plot_led(83, black_key);
-    display_plot_led(85, black_key);
-    display_plot_led(86, black_key);
-    display_plot_led(87, black_key);
-    display_plot_led(71, white_key);
-    display_plot_led(72, white_key);
-    display_plot_led(73, white_key);
-    display_plot_led(74, white_key);
-    display_plot_led(75, white_key);
-    display_plot_led(76, white_key);
-    display_plot_led(77, white_key);
-    display_plot_led(78, white_key);
-}
