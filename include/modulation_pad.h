@@ -7,8 +7,6 @@ typedef struct ModualationPad {
     u8 index;
     u8 cc;
     u8 midi_channel;
-    u8 start;
-    u8 end;
     int color;
     u8 value_range[2];
 } ModulationPad;
