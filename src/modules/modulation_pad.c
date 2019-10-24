@@ -13,11 +13,11 @@ void modulation_pad_handler(ModulationPad *pad, u8 index, u8 value) {
 }
 
 u8 modulation_pad_calculate_value(u8 value, u8 range1, u8 range2) { 
-       return range1 + (
-            value / (1 + (
-                127 / (range2 - range1)
-            ))
-        );
+    return range1 + (
+        value / (1 + (
+            127 / (range2 - range1)
+        ))
+    );
 }
 
 void modulation_pad_aftertouch_handler(ModulationPad *pad, u8 index, u8 value) {
