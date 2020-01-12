@@ -43,10 +43,11 @@
 #include "display.h"
 #include "helper.h"
 #include "fader_section.h"
-#include "performance_section.h"
+#include "sample_page.h"
 #include "midi.h"
 #include "modulation_pad.h"
-
+#include "hit_pad.h"
+#include "cc_pad.h"
 /******************************************************************************
  Button indexing is as follows - numbers in brackets do not correspond to real
  buttons, but can be harmessly sent in hal_set_led.
@@ -63,6 +64,8 @@
 //
 // Interface to the hardware (implemented in launchpad_pro.a library)
 // ____________________________________________________________________________
+
+u8 current_page;
 
 /**
  * Set an LED's RGB value.  This function is safe to call from any
