@@ -12,10 +12,18 @@ void display_plot_led(u8 index, int color) {
 }
 
 void display_fill_all(int color) {
-    for (u8 i = 0; i < 99; ++i) {
+
+    // last line is for muted tracks
+    for (u8 i = 10; i < 99; ++i) {
         display_plot_led(i, color);
     }    
 }
+void display_draw_track_buttons(u8 *muted_tracks, int color) {
+    for (u8 i = 0; i < 9; ++i) {
+        display_plot_led(i + 1, color * !muted_tracks[i]);
+    }
+}
+
 void display_fill_pads(int color) {
     for (u8 i = 1; i < 9; ++i) {
         for (u8 j = 1; j < 9; ++j) {
