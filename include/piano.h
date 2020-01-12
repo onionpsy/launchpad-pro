@@ -10,6 +10,8 @@ typedef struct Piano {
     u8 pads_intervals[14];
     int octave_color;
     int keys_color;
+    u8 pressed_notes[4];
+    u8 n_pressed_notes;
 } Piano;
 
 #endif
