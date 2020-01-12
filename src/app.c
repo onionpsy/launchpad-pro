@@ -47,17 +47,20 @@ FaderSection fader_section;
 
 u8 buttons[BUTTON_COUNT] = {0};
 
-u8 current_section = FADER_SECTION;
+HitPad *hit_pad_buffer[10]; // tmp
+u8 buffer_pos = 0;
+
+u8 muted_tracks[8] = {0};
 
 // ----------------------------------------------------------------
 
 void app_sysex_event(u8 port, u8 * data, u16 count) { }
 
 void app_aftertouch_event(u8 index, u8 value) {
-    switch (current_section) {
+    /*switch (current_section) {
         case FADER_SECTION: break; // TODO
         case PERFORMANCE_SECTION: performance_section_aftertouch_handler(index, value); break;
-    }  
+    } */ 
 }
 
 void app_surface_event(u8 type, u8 index, u8 value) {
@@ -87,26 +90,42 @@ void app_surface_event(u8 type, u8 index, u8 value) {
 
 // Pads event (11->18 ... 81->88)
 void app_pad_event(u8 index, u8 value) {
-    switch (current_section) {
-        case FADER_SECTION: fader_section_handler(index); break;
-        case PERFORMANCE_SECTION: performance_section_handler(index, value); break;
-    }
+    
+    // TODO clean, switch
+    if (is_faders_page(current_page)) {
+        fader_section_handler(index, value);
+    } else if (current_page == SAMPLE_PAGE) {
+        sample_page_handler(index, value);
+    } else if (current_page == PIANO_PAGE) {
+        piano_page_handler(index, value);
+    } 
 }
 
 // Button !pads
 void app_button_event(u8 index, u8 value) {
-    if (is_section_button(index)) {
-        display_fill_all(0x000000);
-        current_section = index;
-        switch (index) {
-            case FADER_SECTION: fader_section_draw(); break;
-            case PERFORMANCE_SECTION: ; performance_section_draw(); break;
-        }
-    } else if (is_page_button(index)) {
-        switch (current_section) {
-            case FADER_SECTION: fader_section_change_page(index); break;
-            case PERFORMANCE_SECTION: performance_section_change_page(index); break;
-        }
+    if (value == 0) {
+        return;
+    }
+
+    // Handle track mutes
+    if (is_mute_button(index)) {
+        muted_tracks[(index - 1) % 10] = !muted_tracks[(index - 1) % 10];
+        display_draw_track_buttons(muted_tracks, 0x00AA00);
+        midi_send(DINMIDI, CC, index, 94, muted_tracks[(index - 1) % 10]);
+        return;
+    }
+
+    display_fill_all(0x000000);
+    display_plot_led(index, 0xFFFFFF);
+    current_page = index;
+
+
+    if (is_faders_page(index)) {
+        fader_section_change_page(index);
+    } else if (index == SAMPLE_PAGE) {
+        sample_page_draw();
+    } else if (index == PIANO_PAGE) {
+        piano_page_draw();
     }
 }
 
@@ -115,15 +134,22 @@ void app_midi_event(u8 port, u8 status, u8 d1, u8 d2)
     // example - MIDI interface functionality for USB "MIDI" port -> DIN port
     if (port == USBMIDI)
     {
-        hal_send_midi(DINMIDI, status, d1, d2);
     }
     
     // // example -MIDI interface functionality for DIN -> USB "MIDI" port port
     if (port == DINMIDI)
     {
         hal_send_midi(USBMIDI, status, d1, d2);
+
+        switch (status) {
+            case MIDITIMINGCLOCK: sequencer_handle_clock(); break;
+            case MIDISTART:
+            sequencer_handle_start(); break;
+            case MIDISTOP: sequencer_handle_stop(); break;
+        }
     }
 }
+
 void app_cable_event(u8 type, u8 value)
 {
     // example - light the Setup LED to indicate cable connections
@@ -139,12 +165,47 @@ void app_cable_event(u8 type, u8 value)
 
 void app_timer_event()
 {
+    #define TICK_MS 100
+    static int ms = TICK_MS;
+
+    if (++ms >= TICK_MS) {
+        ms = 0;
+        
+        /*midi_send(USBMIDI, CC, pad->midi_channel, pad->cc, pad->value);
+        midi_send(USBMIDI, NOTEON, pad->midi_channel, 36, value);*/
+
+        /*for (u8 i = 0; i < 10; ++i) {
+            if (!hit_pad_buffer[i]) {
+                continue;
+            };
+
+            midi_send(
+                DINMIDI,
+                NOTEON,
+                1,
+                36,
+                100
+            );
+
+            hit_pad_buffer[i] = '\0';
+            buffer_pos = buffer_pos - 1;
+
+            midi_send(
+                DINMIDI,
+                NOTEOFF,
+                8,
+                36,
+                100
+            );
+        }*/
+    }
 }
 
 void app_init(const u16 *adc_raw)
 {
     fader_section_init();  
-    performance_section_init();
+    sample_page_init();
+    piano_page_init();
 	
 	g_ADC = adc_raw;
 }
