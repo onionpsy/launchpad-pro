@@ -4,4 +4,4 @@ echo 'Build'
 docker run -t -v $(pwd):/launchpad-pro novation-launchpad-pro-dev make
 
 echo 'Upload'
-amidi -p hw:1 -s build/launchpad_pro.syx
+amidi -p hw:$1 -s build/launchpad_pro.syx
